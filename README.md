@@ -22,20 +22,12 @@ screen.Flush()
 cell, err := screen.GetCellAt(0, 0)
 ```
 
-## Requirements
-
-libvterm: must be installed with pkg-config
-
-## Installation
-
-```
-$ go get github.com/mattn/go-libvterm
-```
-
 ## License
 
 MIT
 
 ## Author
 
-Yasuhiro Matsumoto (a.k.a. mattn)
+Original by [Yasuhiro Matsumoto](https://github.com/mattn/go-libvterm) (a.k.a. mattn)
+
+This is a fork by me.
