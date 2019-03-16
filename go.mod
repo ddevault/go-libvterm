@@ -1,4 +1,4 @@
-module github.com/micromaomao/go-libvterm
+module git.sr.ht/~sircmpwn/go-libvterm
 
 go 1.12
 
