@@ -1,8 +1,7 @@
 package vterm
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/libvterm/include
-#cgo LDFLAGS: ${SRCDIR}/libvterm.a
+#cgo pkg-config: vterm
 #include <vterm.h>
 
 inline static int _attr_bold(VTermScreenCell *cell) { return cell->attrs.bold; }
@@ -150,38 +149,14 @@ func NewVTermColorRGB(col color.Color) VTermColor {
 		b = uint8(b16 >> 8)
 	}
 	var t C.VTermColor
-	C.vterm_color_rgb(&t, C.uchar(r), C.uchar(g), C.uchar(b))
+	t.red = C.uchar(r)
+	t.green = C.uchar(g)
+	t.blue = C.uchar(b)
 	return VTermColor{t}
 }
 
-func NewVTermColorIndexed(index uint8) VTermColor {
-	var t C.VTermColor
-	t[0] |= 1
-	t[1] = index
-	return VTermColor{t}
-}
-
-func (c *VTermColor) IsIndex() bool {
-	return c.color[0]&1 > 0
-}
-func (c *VTermColor) IsRGB() bool {
-	return c.color[0]&1 == 0
-}
-
-func (c *VTermColor) GetRGB() (r, g, b uint8, ok bool) {
-	if c.IsRGB() {
-		return uint8(c.color[1]), uint8(c.color[2]), uint8(c.color[3]), true
-	} else {
-		return 0, 0, 0, false
-	}
-}
-
-func (c *VTermColor) GetIndex() (index uint8, ok bool) {
-	if c.IsIndex() {
-		return uint8(c.color[1]), true
-	} else {
-		return 0, false
-	}
+func (c *VTermColor) GetRGB() (r, g, b uint8) {
+	return uint8(c.color.red), uint8(c.color.green), uint8(c.color.blue)
 }
 
 func (sc *ScreenCell) Chars() []rune {
@@ -368,13 +343,8 @@ type State struct {
 }
 
 func (s *State) ConvertVTermColorToRGB(col VTermColor) color.RGBA {
-	if col.IsRGB() {
-		arr := col.color
-		return color.RGBA{uint8(arr[1]), uint8(arr[2]), uint8(arr[3]), 255}
-	}
-	cColor := col.color
-	C.vterm_state_convert_color_to_rgb(s.state, &cColor)
-	return color.RGBA{uint8(cColor[1]), uint8(cColor[2]), uint8(cColor[3]), 255}
+	c := col.color
+	return color.RGBA{uint8(c.red), uint8(c.green), uint8(c.blue), 255}
 }
 
 func (s *State) SetDefaultColors(fg, bg VTermColor) {
