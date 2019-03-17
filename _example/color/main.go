@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/mattn/go-libvterm"
+	"git.sr.ht/~sircmpwn/go-libvterm"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/math/fixed"

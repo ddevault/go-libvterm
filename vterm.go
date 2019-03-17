@@ -427,17 +427,35 @@ func _go_handle_bell(user unsafe.Pointer) C.int {
 	return 0
 }
 
+const (
+	vterm_valuetype_bool = 1
+	vterm_valuetype_int = 2
+	vterm_valuetype_string = 3
+	vterm_valuetype_color = 4
+)
+
 //export _go_handle_set_term_prop
 func _go_handle_set_term_prop(prop C.VTermProp, val *C.VTermValue,
 	user unsafe.Pointer) C.int {
 
 	onSetTermProp := pointer.Restore(user).(*VTerm).ObtainScreen().OnSetTermProp
+
 	if onSetTermProp != nil {
-		value := VTermValue{
-			boolean: bool(C._vterm_value_get_boolean(val)),
-			number:  int(C._vterm_value_get_number(val)),
-			str:     C.GoString(C._vterm_value_get_string(val)),
+		value := VTermValue{}
+
+		switch int(C.vterm_get_prop_type(prop)) {
+		case vterm_valuetype_bool:
+			value.boolean = bool(C._vterm_value_get_boolean(val))
+		case vterm_valuetype_int:
+			value.number = int(C._vterm_value_get_number(val))
+		case vterm_valuetype_string:
+			value.str = C.GoString(C._vterm_value_get_string(val))
+		case vterm_valuetype_color:
+			return 0 // TODO
+		default:
+			return 0
 		}
+
 		return C.int(onSetTermProp(int(prop), &value))
 	}
 	return 0
