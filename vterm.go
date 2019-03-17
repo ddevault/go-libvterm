@@ -288,10 +288,10 @@ func (vt *VTerm) SetUTF8(b bool) {
 }
 
 type VTermValue struct {
-	boolean bool
-	number  int
-	str     string
-	color   VTermColor
+	Boolean bool
+	Number  int
+	String  string
+	Color   VTermColor
 }
 
 const (
@@ -445,11 +445,11 @@ func _go_handle_set_term_prop(prop C.VTermProp, val *C.VTermValue,
 
 		switch int(C.vterm_get_prop_type(prop)) {
 		case vterm_valuetype_bool:
-			value.boolean = bool(C._vterm_value_get_boolean(val))
+			value.Boolean = bool(C._vterm_value_get_boolean(val))
 		case vterm_valuetype_int:
-			value.number = int(C._vterm_value_get_number(val))
+			value.Number = int(C._vterm_value_get_number(val))
 		case vterm_valuetype_string:
-			value.str = C.GoString(C._vterm_value_get_string(val))
+			value.String = C.GoString(C._vterm_value_get_string(val))
 		case vterm_valuetype_color:
 			return 0 // TODO
 		default:
