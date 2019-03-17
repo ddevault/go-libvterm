@@ -3,6 +3,7 @@ package vterm
 /*
 #cgo pkg-config: vterm
 #include <vterm.h>
+#include <stdio.h>
 
 inline static int _attr_bold(VTermScreenCell *cell) { return cell->attrs.bold; }
 inline static int _attr_underline(VTermScreenCell *cell) { return cell->attrs.underline; }
@@ -46,6 +47,7 @@ static int _vterm_value_get_number(VTermValue *val) {
 }
 
 static char *_vterm_value_get_string(VTermValue *val) {
+	printf("get_string: %s", val->string);
 	return val->string;
 }
 */
