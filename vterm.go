@@ -16,6 +16,7 @@ inline static int _attr_dhl(VTermScreenCell *cell) { return cell->attrs.dhl; }
 
 int _go_handle_damage(VTermRect, void*);
 int _go_handle_bell(void*);
+int _go_handle_set_term_prop(VTermProp, VTermValue*, void*);
 int _go_handle_resize(int, int, void*);
 int _go_handle_moverect(VTermRect, VTermRect, void*);
 int _go_handle_movecursor(VTermPos, VTermPos, int, void*);
@@ -24,7 +25,7 @@ static VTermScreenCallbacks _screen_callbacks = {
   _go_handle_damage,
   _go_handle_moverect,
   _go_handle_movecursor,
-  NULL,
+  _go_handle_set_term_prop,
   _go_handle_bell,
   _go_handle_resize,
   NULL,
@@ -34,6 +35,18 @@ static VTermScreenCallbacks _screen_callbacks = {
 static void
 _vterm_screen_set_callbacks(VTermScreen *screen, void *user) {
   vterm_screen_set_callbacks(screen, &_screen_callbacks, user);
+}
+
+static bool _vterm_value_get_boolean(VTermValue *val) {
+	return val->boolean;
+}
+
+static int _vterm_value_get_number(VTermValue *val) {
+	return val->number;
+}
+
+static char *_vterm_value_get_string(VTermValue *val) {
+	return val->string;
 }
 */
 import "C"
@@ -274,17 +287,35 @@ func (vt *VTerm) SetUTF8(b bool) {
 	C.vterm_set_utf8(vt.term, v)
 }
 
+type VTermValue struct {
+	boolean bool
+	number  int
+	str     string
+	color   VTermColor
+}
+
+const (
+	VTERM_PROP_CURSORVISIBLE = 1
+	VTERM_PROP_CURSORBLINK
+	VTERM_PROP_ALTSCREEN
+	VTERM_PROP_TITLE
+	VTERM_PROP_ICONNAME
+	VTERM_PROP_REVERSE
+	VTERM_PROP_CURSORSHAPE
+	VTERM_PROP_MOUSE
+)
+
 type Screen struct {
 	screen *C.VTermScreen
 
-	UserData     interface{}
-	OnDamage     func(*Rect) int
-	OnResize     func(int, int) int
-	OnMoveRect   func(*Rect, *Rect) int
-	OnMoveCursor func(*Pos, *Pos, bool) int
-	OnBell       func() int
+	UserData      interface{}
+	OnDamage      func(*Rect) int
+	OnResize      func(int, int) int
+	OnMoveRect    func(*Rect, *Rect) int
+	OnMoveCursor  func(*Pos, *Pos, bool) int
+	OnBell        func() int
+	OnSetTermProp func(int, *VTermValue) int
 	/*
-	  int (*settermprop)(VTermProp prop, VTermValue *val, void *user);
 	  int (*sb_pushline)(int cols, const VTermScreenCell *cells, void *user);
 	  int (*sb_popline)(int cols, VTermScreenCell *cells, void *user);
 	*/
@@ -353,7 +384,7 @@ func (s *State) SetDefaultColors(fg, bg VTermColor) {
 
 // index between 0 and 15, 0-7 are normal colors and 8-15 are bright colors.
 func (s *State) SetPaletteColor(index int, col VTermColor) {
-	if index < 0 || index >= 16 {
+	if index < 0 || index >= 256 {
 		panic("Index out of range")
 	}
 	C.vterm_state_set_palette_color(s.state, C.int(index), &col.color)
@@ -370,7 +401,7 @@ func (s *State) GetDefaultColors() (fg, bg VTermColor) {
 
 // index between 0 and 15, 0-7 are normal colors and 8-15 are bright colors.
 func (s *State) GetPaletteColor(index int) VTermColor {
-	if index < 0 || index >= 16 {
+	if index < 0 || index >= 256 {
 		panic("Index out of range")
 	}
 	c_color := C.VTermColor{}
@@ -392,6 +423,22 @@ func _go_handle_bell(user unsafe.Pointer) C.int {
 	onBell := pointer.Restore(user).(*VTerm).ObtainScreen().OnBell
 	if onBell != nil {
 		return C.int(onBell())
+	}
+	return 0
+}
+
+//export _go_handle_set_term_prop
+func _go_handle_set_term_prop(prop C.VTermProp, val *C.VTermValue,
+	user unsafe.Pointer) C.int {
+
+	onSetTermProp := pointer.Restore(user).(*VTerm).ObtainScreen().OnSetTermProp
+	if onSetTermProp != nil {
+		value := VTermValue{
+			boolean: bool(C._vterm_value_get_boolean(val)),
+			number:  int(C._vterm_value_get_number(val)),
+			str:     C.GoString(C._vterm_value_get_string(val)),
+		}
+		return C.int(onSetTermProp(int(prop), &value))
 	}
 	return 0
 }
