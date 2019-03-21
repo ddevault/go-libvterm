@@ -103,7 +103,7 @@ const (
   KeyEnd        = Key(C.VTERM_KEY_END)
   KeyPageUp     = Key(C.VTERM_KEY_PAGEUP)
   KeyPageDown   = Key(C.VTERM_KEY_PAGEDOWN)
-  KeyFunction_0 = Key(C.VTERM_KEY_FUNCTION_0)
+  KeyFunction0  = Key(C.VTERM_KEY_FUNCTION_0)
   KeyKp_0       = Key(C.VTERM_KEY_KP_0)
   KeyKp_1       = Key(C.VTERM_KEY_KP_1)
   KeyKp_2       = Key(C.VTERM_KEY_KP_2)
