@@ -76,6 +76,54 @@ const (
 	AttrNAttrrs
 )
 
+type Modifier uint
+
+const (
+	ModNone  Modifier = 0
+	ModShift          = Modifier(C.VTERM_MOD_SHIFT)
+	ModAlt            = Modifier(C.VTERM_MOD_ALT)
+	ModCtrl           = Modifier(C.VTERM_MOD_CTRL)
+)
+
+type Key uint
+
+const (
+  KeyNone       = Key(0)
+  KeyEnter      = Key(C.VTERM_KEY_ENTER)
+  KeyTab        = Key(C.VTERM_KEY_TAB)
+  KeyBackspace  = Key(C.VTERM_KEY_BACKSPACE)
+  KeyEscape     = Key(C.VTERM_KEY_ESCAPE)
+  KeyUp         = Key(C.VTERM_KEY_UP)
+  KeyDown       = Key(C.VTERM_KEY_DOWN)
+  KeyLeft       = Key(C.VTERM_KEY_LEFT)
+  KeyRight      = Key(C.VTERM_KEY_RIGHT)
+  KeyIns        = Key(C.VTERM_KEY_INS)
+  KeyDel        = Key(C.VTERM_KEY_DEL)
+  KeyHome       = Key(C.VTERM_KEY_HOME)
+  KeyEnd        = Key(C.VTERM_KEY_END)
+  KeyPageup     = Key(C.VTERM_KEY_PAGEUP)
+  KeyPagedown   = Key(C.VTERM_KEY_PAGEDOWN)
+  KeyFunction_0 = Key(C.VTERM_KEY_FUNCTION_0)
+  KeyKp_0       = Key(C.VTERM_KEY_KP_0)
+  KeyKp_1       = Key(C.VTERM_KEY_KP_1)
+  KeyKp_2       = Key(C.VTERM_KEY_KP_2)
+  KeyKp_3       = Key(C.VTERM_KEY_KP_3)
+  KeyKp_4       = Key(C.VTERM_KEY_KP_4)
+  KeyKp_5       = Key(C.VTERM_KEY_KP_5)
+  KeyKp_6       = Key(C.VTERM_KEY_KP_6)
+  KeyKp_7       = Key(C.VTERM_KEY_KP_7)
+  KeyKp_8       = Key(C.VTERM_KEY_KP_8)
+  KeyKp_9       = Key(C.VTERM_KEY_KP_9)
+  KeyKpMult     = Key(C.VTERM_KEY_KP_MULT)
+  KeyKpPlus     = Key(C.VTERM_KEY_KP_PLUS)
+  KeyKpComma    = Key(C.VTERM_KEY_KP_COMMA)
+  KeyKpMinus    = Key(C.VTERM_KEY_KP_MINUS)
+  KeyKpPeriod   = Key(C.VTERM_KEY_KP_PERIOD)
+  KeyKpDivide   = Key(C.VTERM_KEY_KP_DIVIDE)
+  KeyKpEnter    = Key(C.VTERM_KEY_KP_ENTER)
+  KeyKpEqual    = Key(C.VTERM_KEY_KP_EQUAL)
+)
+
 type VTerm struct {
 	term   *C.VTerm
 	screen *Screen
@@ -253,6 +301,14 @@ func (vt *VTerm) KeyboardStartPaste() {
 
 func (vt *VTerm) KeyboardStopPaste() {
 	C.vterm_keyboard_end_paste(vt.term)
+}
+
+func (vt *VTerm) KeyboardUnichar(c rune, mods Modifier) {
+	C.vterm_keyboard_unichar(vt.term, C.uint32_t(c), C.VTermModifier(mods))
+}
+
+func (vt *VTerm) KeyboardKey(key Key, mods Modifier) {
+	C.vterm_keyboard_key(vt.term, C.VTermKey(key), C.VTermModifier(mods))
 }
 
 func (vt *VTerm) ObtainState() *State {
