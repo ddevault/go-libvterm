@@ -104,16 +104,16 @@ const (
   KeyPageUp     = Key(C.VTERM_KEY_PAGEUP)
   KeyPageDown   = Key(C.VTERM_KEY_PAGEDOWN)
   KeyFunction0  = Key(C.VTERM_KEY_FUNCTION_0)
-  KeyKp_0       = Key(C.VTERM_KEY_KP_0)
-  KeyKp_1       = Key(C.VTERM_KEY_KP_1)
-  KeyKp_2       = Key(C.VTERM_KEY_KP_2)
-  KeyKp_3       = Key(C.VTERM_KEY_KP_3)
-  KeyKp_4       = Key(C.VTERM_KEY_KP_4)
-  KeyKp_5       = Key(C.VTERM_KEY_KP_5)
-  KeyKp_6       = Key(C.VTERM_KEY_KP_6)
-  KeyKp_7       = Key(C.VTERM_KEY_KP_7)
-  KeyKp_8       = Key(C.VTERM_KEY_KP_8)
-  KeyKp_9       = Key(C.VTERM_KEY_KP_9)
+  KeyKp0        = Key(C.VTERM_KEY_KP_0)
+  KeyKp1        = Key(C.VTERM_KEY_KP_1)
+  KeyKp2        = Key(C.VTERM_KEY_KP_2)
+  KeyKp3        = Key(C.VTERM_KEY_KP_3)
+  KeyKp4        = Key(C.VTERM_KEY_KP_4)
+  KeyKp5        = Key(C.VTERM_KEY_KP_5)
+  KeyKp6        = Key(C.VTERM_KEY_KP_6)
+  KeyKp7        = Key(C.VTERM_KEY_KP_7)
+  KeyKp8        = Key(C.VTERM_KEY_KP_8)
+  KeyKp9        = Key(C.VTERM_KEY_KP_9)
   KeyKpMult     = Key(C.VTERM_KEY_KP_MULT)
   KeyKpPlus     = Key(C.VTERM_KEY_KP_PLUS)
   KeyKpComma    = Key(C.VTERM_KEY_KP_COMMA)
@@ -455,6 +455,12 @@ func (s *State) GetDefaultColors() (fg, bg VTermColor) {
 	fg = VTermColor{c_fg}
 	bg = VTermColor{c_bg}
 	return
+}
+
+func (s *State) GetCursorPos() (int, int) {
+	var pos C.VTermPos
+	C.vterm_state_get_cursorpos(s.state, &pos)
+	return int(pos.row), int(pos.col)
 }
 
 // index between 0 and 15, 0-7 are normal colors and 8-15 are bright colors.
