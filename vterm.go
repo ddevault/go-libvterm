@@ -38,6 +38,25 @@ _vterm_screen_set_callbacks(VTermScreen *screen, void *user) {
   vterm_screen_set_callbacks(screen, &_screen_callbacks, user);
 }
 
+static VTermStateCallbacks _state_callbacks = {
+	NULL,
+	_go_handle_movecursor,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+};
+
+static void
+_vterm_state_set_callbacks(VTermState *state, void *user) {
+  vterm_state_set_callbacks(state, &_state_callbacks, user);
+}
+
 static bool _vterm_value_get_boolean(VTermValue *val) {
 	return val->boolean;
 }
@@ -277,6 +296,7 @@ func New(rows, cols int) *VTerm {
 		},
 	}
 	C._vterm_screen_set_callbacks(C.vterm_obtain_screen(term), pointer.Save(vt))
+	C._vterm_state_set_callbacks(C.vterm_obtain_state(term), pointer.Save(vt))
 	return vt
 }
 
