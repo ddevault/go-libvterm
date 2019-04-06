@@ -1,7 +1,2 @@
-github.com/mattn/go-libvterm v0.0.0-20190121020430-725de0572324 h1:0C5/KYb9AMSjg9VhXk0RxNMZN/4y3vztCYVNSHIkHlg=
-github.com/mattn/go-libvterm v0.0.0-20190121020430-725de0572324/go.mod h1:E9ZjxjhK3K5YoeO/TCZVNsquRRZX2LeIX0+G33613Io=
 github.com/mattn/go-pointer v0.0.0-20180825124634-49522c3f3791 h1:PfHMsLQJwoc0ccjK0sam6J0wQo4s8mOuAo2yQGw+T2U=
 github.com/mattn/go-pointer v0.0.0-20180825124634-49522c3f3791/go.mod h1:2zXcozF6qYGgmsG+SeTZz3oAbFLdD3OWqnUbNvJZAlc=
-golang.org/x/image v0.0.0-20190227222117-0694c2d4d067 h1:KYGJGHOQy8oSi1fDlSpcZF0+juKwk/hEMv5SiwHogR0=
-golang.org/x/image v0.0.0-20190227222117-0694c2d4d067/go.mod h1:kZ7UVZpmo3dzQBMxlp+ypCbDeSB+sBbTgSJuh5dn5js=
-golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
