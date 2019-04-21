@@ -88,40 +88,40 @@ const (
 type Key uint
 
 const (
-  KeyNone       = Key(0)
-  KeyEnter      = Key(C.VTERM_KEY_ENTER)
-  KeyTab        = Key(C.VTERM_KEY_TAB)
-  KeyBackspace  = Key(C.VTERM_KEY_BACKSPACE)
-  KeyEscape     = Key(C.VTERM_KEY_ESCAPE)
-  KeyUp         = Key(C.VTERM_KEY_UP)
-  KeyDown       = Key(C.VTERM_KEY_DOWN)
-  KeyLeft       = Key(C.VTERM_KEY_LEFT)
-  KeyRight      = Key(C.VTERM_KEY_RIGHT)
-  KeyIns        = Key(C.VTERM_KEY_INS)
-  KeyDel        = Key(C.VTERM_KEY_DEL)
-  KeyHome       = Key(C.VTERM_KEY_HOME)
-  KeyEnd        = Key(C.VTERM_KEY_END)
-  KeyPageUp     = Key(C.VTERM_KEY_PAGEUP)
-  KeyPageDown   = Key(C.VTERM_KEY_PAGEDOWN)
-  KeyFunction0  = Key(C.VTERM_KEY_FUNCTION_0)
-  KeyKp0        = Key(C.VTERM_KEY_KP_0)
-  KeyKp1        = Key(C.VTERM_KEY_KP_1)
-  KeyKp2        = Key(C.VTERM_KEY_KP_2)
-  KeyKp3        = Key(C.VTERM_KEY_KP_3)
-  KeyKp4        = Key(C.VTERM_KEY_KP_4)
-  KeyKp5        = Key(C.VTERM_KEY_KP_5)
-  KeyKp6        = Key(C.VTERM_KEY_KP_6)
-  KeyKp7        = Key(C.VTERM_KEY_KP_7)
-  KeyKp8        = Key(C.VTERM_KEY_KP_8)
-  KeyKp9        = Key(C.VTERM_KEY_KP_9)
-  KeyKpMult     = Key(C.VTERM_KEY_KP_MULT)
-  KeyKpPlus     = Key(C.VTERM_KEY_KP_PLUS)
-  KeyKpComma    = Key(C.VTERM_KEY_KP_COMMA)
-  KeyKpMinus    = Key(C.VTERM_KEY_KP_MINUS)
-  KeyKpPeriod   = Key(C.VTERM_KEY_KP_PERIOD)
-  KeyKpDivide   = Key(C.VTERM_KEY_KP_DIVIDE)
-  KeyKpEnter    = Key(C.VTERM_KEY_KP_ENTER)
-  KeyKpEqual    = Key(C.VTERM_KEY_KP_EQUAL)
+	KeyNone      = Key(0)
+	KeyEnter     = Key(C.VTERM_KEY_ENTER)
+	KeyTab       = Key(C.VTERM_KEY_TAB)
+	KeyBackspace = Key(C.VTERM_KEY_BACKSPACE)
+	KeyEscape    = Key(C.VTERM_KEY_ESCAPE)
+	KeyUp        = Key(C.VTERM_KEY_UP)
+	KeyDown      = Key(C.VTERM_KEY_DOWN)
+	KeyLeft      = Key(C.VTERM_KEY_LEFT)
+	KeyRight     = Key(C.VTERM_KEY_RIGHT)
+	KeyIns       = Key(C.VTERM_KEY_INS)
+	KeyDel       = Key(C.VTERM_KEY_DEL)
+	KeyHome      = Key(C.VTERM_KEY_HOME)
+	KeyEnd       = Key(C.VTERM_KEY_END)
+	KeyPageUp    = Key(C.VTERM_KEY_PAGEUP)
+	KeyPageDown  = Key(C.VTERM_KEY_PAGEDOWN)
+	KeyFunction0 = Key(C.VTERM_KEY_FUNCTION_0)
+	KeyKp0       = Key(C.VTERM_KEY_KP_0)
+	KeyKp1       = Key(C.VTERM_KEY_KP_1)
+	KeyKp2       = Key(C.VTERM_KEY_KP_2)
+	KeyKp3       = Key(C.VTERM_KEY_KP_3)
+	KeyKp4       = Key(C.VTERM_KEY_KP_4)
+	KeyKp5       = Key(C.VTERM_KEY_KP_5)
+	KeyKp6       = Key(C.VTERM_KEY_KP_6)
+	KeyKp7       = Key(C.VTERM_KEY_KP_7)
+	KeyKp8       = Key(C.VTERM_KEY_KP_8)
+	KeyKp9       = Key(C.VTERM_KEY_KP_9)
+	KeyKpMult    = Key(C.VTERM_KEY_KP_MULT)
+	KeyKpPlus    = Key(C.VTERM_KEY_KP_PLUS)
+	KeyKpComma   = Key(C.VTERM_KEY_KP_COMMA)
+	KeyKpMinus   = Key(C.VTERM_KEY_KP_MINUS)
+	KeyKpPeriod  = Key(C.VTERM_KEY_KP_PERIOD)
+	KeyKpDivide  = Key(C.VTERM_KEY_KP_DIVIDE)
+	KeyKpEnter   = Key(C.VTERM_KEY_KP_ENTER)
+	KeyKpEqual   = Key(C.VTERM_KEY_KP_EQUAL)
 )
 
 type VTerm struct {
@@ -212,9 +212,9 @@ func NewVTermColorRGB(col color.Color) VTermColor {
 		b = uint8(b16 >> 8)
 	}
 	var t C.VTermColor
-	t.red = C.uchar(r)
-	t.green = C.uchar(g)
-	t.blue = C.uchar(b)
+	t.red = C.uint8_t(r)
+	t.green = C.uint8_t(g)
+	t.blue = C.uint8_t(b)
 	return VTermColor{t}
 }
 
@@ -493,10 +493,10 @@ func _go_handle_bell(user unsafe.Pointer) C.int {
 }
 
 const (
-	vterm_valuetype_bool = 1
-	vterm_valuetype_int = 2
+	vterm_valuetype_bool   = 1
+	vterm_valuetype_int    = 2
 	vterm_valuetype_string = 3
-	vterm_valuetype_color = 4
+	vterm_valuetype_color  = 4
 )
 
 //export _go_handle_set_term_prop
