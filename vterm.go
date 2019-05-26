@@ -50,6 +50,12 @@ static char *_vterm_value_get_string(VTermValue *val) {
 	printf("get_string: %s", val->string);
 	return val->string;
 }
+
+typedef struct {
+	uint8_t type;
+	uint8_t red, green, blue;
+} rgb;
+
 */
 import "C"
 import (
@@ -211,15 +217,32 @@ func NewVTermColorRGB(col color.Color) VTermColor {
 		g = uint8(g16 >> 8)
 		b = uint8(b16 >> 8)
 	}
-	var t C.VTermColor
-	t.red = C.uint8_t(r)
-	t.green = C.uint8_t(g)
-	t.blue = C.uint8_t(b)
-	return VTermColor{t}
+	var rgb C.rgb
+	rgb.red = C.uint8_t(r)
+	rgb.green = C.uint8_t(g)
+	rgb.blue = C.uint8_t(b)
+	x := *_RGBToVTermColor(&rgb)
+	return VTermColor{x}
+}
+
+// Convert union to inner struct rgb type to access color fields
+func _VTermColorToRGB(col *C.VTermColor) *C.rgb {
+	return *(**C.rgb)(unsafe.Pointer(&col))
+}
+
+// Convert struct rgb type back to union for C calls
+func _RGBToVTermColor(rgb *C.rgb) *C.VTermColor {
+	return *(**C.VTermColor)(unsafe.Pointer(&rgb))
+}
+
+// Helper function to get the correct struct inside the union
+func (c *VTermColor) colors() *C.rgb {
+	return _VTermColorToRGB(&c.color)
 }
 
 func (c *VTermColor) GetRGB() (r, g, b uint8) {
-	return uint8(c.color.red), uint8(c.color.green), uint8(c.color.blue)
+	colors := c.colors()
+	return uint8(colors.red), uint8(colors.green), uint8(colors.blue)
 }
 
 func (sc *ScreenCell) Chars() []rune {
@@ -433,7 +456,7 @@ type State struct {
 }
 
 func (s *State) ConvertVTermColorToRGB(col VTermColor) color.RGBA {
-	c := col.color
+	c := col.colors()
 	return color.RGBA{uint8(c.red), uint8(c.green), uint8(c.blue), 255}
 }
 
