@@ -220,6 +220,22 @@ const (
 	VTERM_COLOR_DEFAULT_BG uint8 = 0x04
 )
 
+func (c *VTermColor) IsIndexed() bool {
+	return (c.GetType()&VTERM_COLOR_TYPE_MASK) == VTERM_COLOR_INDEXED
+}
+
+func (c *VTermColor) IsRgb() bool {
+	return (c.GetType()&VTERM_COLOR_TYPE_MASK) == VTERM_COLOR_RGB
+}
+
+func (c *VTermColor) IsDefaultFg() bool {
+	return c.GetType()&VTERM_COLOR_DEFAULT_FG > 0
+}
+
+func (c *VTermColor) IsDefaultBg() bool {
+	return c.GetType()&VTERM_COLOR_DEFAULT_BG > 0
+}
+
 func (c *VTermColor) GetType() uint8 {
 	colors := c._to_rgb_color()
 	return uint8(colors.color_type)
