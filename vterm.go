@@ -1,7 +1,7 @@
 package vterm
 
 /*
-#cgo CFLAGS: -I"${SRCDIR}/libvterm/include/"
+#cgo CFLAGS: -std=c11 -I"${SRCDIR}/libvterm/include/"
 #include <vterm.h>
 #include <stdio.h>
 
