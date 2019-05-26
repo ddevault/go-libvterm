@@ -52,15 +52,14 @@ static char *_vterm_value_get_string(VTermValue *val) {
 }
 
 typedef struct {
-	uint8_t type;
+	uint8_t color_type;
 	uint8_t red, green, blue;
-} rgb;
+} rgb_color;
 
 */
 import "C"
 import (
 	"errors"
-	"image/color"
 	"unsafe"
 
 	"github.com/mattn/go-pointer"
@@ -201,47 +200,38 @@ type ParserCallbacks struct {
 	*/
 }
 
-// To get the rgb value from a VTermColor instance, call state.ConvertVTermColorToRGB
 type VTermColor struct {
 	color C.VTermColor
 }
 
-func NewVTermColorRGB(col color.Color) VTermColor {
-	var r, g, b uint8
-	colRGBA, ok := col.(color.RGBA)
-	if ok {
-		r, g, b = colRGBA.R, colRGBA.G, colRGBA.B
-	} else {
-		r16, g16, b16, _ := col.RGBA()
-		r = uint8(r16 >> 8)
-		g = uint8(g16 >> 8)
-		b = uint8(b16 >> 8)
-	}
-	var rgb C.rgb
-	rgb.red = C.uint8_t(r)
-	rgb.green = C.uint8_t(g)
-	rgb.blue = C.uint8_t(b)
-	x := *_RGBToVTermColor(&rgb)
-	return VTermColor{x}
+func _VTermColorToRGB(col *C.VTermColor) *C.rgb_color {
+	return *(**C.rgb_color)(unsafe.Pointer(&col))
 }
 
-// Convert union to inner struct rgb type to access color fields
-func _VTermColorToRGB(col *C.VTermColor) *C.rgb {
-	return *(**C.rgb)(unsafe.Pointer(&col))
-}
-
-// Convert struct rgb type back to union for C calls
-func _RGBToVTermColor(rgb *C.rgb) *C.VTermColor {
-	return *(**C.VTermColor)(unsafe.Pointer(&rgb))
-}
-
-// Helper function to get the correct struct inside the union
-func (c *VTermColor) colors() *C.rgb {
+func (c *VTermColor) _to_rgb_color() *C.rgb_color {
 	return _VTermColorToRGB(&c.color)
 }
 
+const (
+	VTERM_COLOR_RGB uint8 = 0x00
+	VTERM_COLOR_INDEXED uint8 = 0x01
+	VTERM_COLOR_TYPE_MASK uint8 = 0x01
+	VTERM_COLOR_DEFAULT_FG uint8 = 0x02
+	VTERM_COLOR_DEFAULT_BG uint8 = 0x04
+)
+
+func (c *VTermColor) GetType() uint8 {
+	colors := c._to_rgb_color()
+	return uint8(colors.color_type)
+}
+
+func (c *VTermColor) GetIndex() uint8 {
+	colors := c._to_rgb_color()
+	return uint8(colors.red)
+}
+
 func (c *VTermColor) GetRGB() (r, g, b uint8) {
-	colors := c.colors()
+	colors := c._to_rgb_color()
 	return uint8(colors.red), uint8(colors.green), uint8(colors.blue)
 }
 
@@ -453,11 +443,6 @@ func (scr *Screen) IsEOL(pos *Pos) bool {
 
 type State struct {
 	state *C.VTermState
-}
-
-func (s *State) ConvertVTermColorToRGB(col VTermColor) color.RGBA {
-	c := col.colors()
-	return color.RGBA{uint8(c.red), uint8(c.green), uint8(c.blue), 255}
 }
 
 func (s *State) SetDefaultColors(fg, bg VTermColor) {
