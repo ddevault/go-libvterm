@@ -1,8 +1,8 @@
 package vterm
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/libvterm/include/
-#cgo LDFLAGS: -L${SRCDIR}/libvterm/src/ -lvterm
+#cgo CFLAGS: -I"${SRCDIR}/libvterm/include/"
+#cgo LDFLAGS: -L"${SRCDIR}/libvterm/src/" -lvterm
 #include <vterm.h>
 #include <stdio.h>
 
