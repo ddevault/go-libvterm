@@ -1,4 +1,4 @@
-module git.sr.ht/~sircmpwn/go-libvterm
+module github.com/ddevault/go-libvterm
 
 go 1.12
 
